@@ -12,7 +12,8 @@ app.use(express.json());
 const authRoutes = require("./routes/authRoutes");
 app.use("/api", authRoutes);
 
-
+const expenseRoutes = require("./routes/expenseRoutes");
+app.use("/api", expenseRoutes);
 
 const PORT = process.env.PORT || 3000;
 
