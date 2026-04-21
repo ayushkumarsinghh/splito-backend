@@ -1,0 +1,52 @@
+POST http://localhost:3000/api/signup
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "email": "user1@example.com",
+  "password": "123456"
+}
+###
+POST http://localhost:3000/api/signup
+Content-Type: application/json
+
+{
+  "username": "user2",
+  "email": "user2@example.com",
+  "password": "123456"
+}
+###
+POST http://localhost:3000/api/signup
+Content-Type: application/json
+
+{
+  "username": "user3",
+  "email": "user3@example.com",
+  "password": "123456"
+}
+###
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+  "email": "user3@example.com",
+  "password": "123456"
+}
+###
+POST http://localhost:3000/api/expense
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyN2YwMGY3MTNiYzA5ZGZhMWMzZSIsImlhdCI6MTc3Njc1NzExOSwiZXhwIjoxNzc2ODQzNTE5fQ.KB7wp7FRfFUysHKEp6dolcKYY73d375YyRd3-Jk6sk0
+
+{
+  "amount": 900,
+  "description": "Dinner",
+  "participants": [
+    "69e727f00f713bc09dfa1c3e",
+    "69e727830f713bc09dfa1c3c",
+    "69e727870f713bc09dfa1c3d"
+  ]
+}
+
+### 
+GET http://localhost:3000/api/balances
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyN2YwMGY3MTNiYzA5ZGZhMWMzZSIsImlhdCI6MTc3Njc1NzExOSwiZXhwIjoxNzc2ODQzNTE5fQ.KB7wp7FRfFUysHKEp6dolcKYY73d375YyRd3-Jk6sk0

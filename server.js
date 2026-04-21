@@ -15,6 +15,9 @@ app.use("/api", authRoutes);
 const expenseRoutes = require("./routes/expenseRoutes");
 app.use("/api", expenseRoutes);
 
+const balanceRoutes = require("./routes/balanceRoutes");
+app.use("/api", balanceRoutes);
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
