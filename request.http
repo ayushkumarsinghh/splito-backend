@@ -29,24 +29,37 @@ POST http://localhost:3000/api/login
 Content-Type: application/json
 
 {
-  "email": "user3@example.com",
+  "email": "user1@example.com",
   "password": "123456"
 }
 ###
 POST http://localhost:3000/api/expense
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyN2YwMGY3MTNiYzA5ZGZhMWMzZSIsImlhdCI6MTc3Njc1NzExOSwiZXhwIjoxNzc2ODQzNTE5fQ.KB7wp7FRfFUysHKEp6dolcKYY73d375YyRd3-Jk6sk0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyN2YwMGY3MTNiYzA5ZGZhMWMzZSIsImlhdCI6MTc3NjgzODY0NSwiZXhwIjoxNzc2OTI1MDQ1fQ.XYnJqJXzeiJZHDWV316A0xQQ6DHwU8MlkKC_yeULB-4
 
 {
   "amount": 900,
   "description": "Dinner",
   "participants": [
     "69e727f00f713bc09dfa1c3e",
-    "69e727830f713bc09dfa1c3c",
-    "69e727870f713bc09dfa1c3d"
+    "69e727830f713bc09dfa1c3c"
   ]
 }
 
 ### 
 GET http://localhost:3000/api/balances
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyN2YwMGY3MTNiYzA5ZGZhMWMzZSIsImlhdCI6MTc3Njc1NzExOSwiZXhwIjoxNzc2ODQzNTE5fQ.KB7wp7FRfFUysHKEp6dolcKYY73d375YyRd3-Jk6sk0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyN2YwMGY3MTNiYzA5ZGZhMWMzZSIsImlhdCI6MTc3NjgzNzk3MywiZXhwIjoxNzc2OTI0MzczfQ.LGzNQ_Dbqc-ORVJhmWDY_Ni-69loHkEBs4jnjPOmQ60
+
+###
+POST http://localhost:3000/api/settle
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyNzgzMGY3MTNiYzA5ZGZhMWMzYyIsImlhdCI6MTc3NjgzODcxMywiZXhwIjoxNzc2OTI1MTEzfQ.ZH-qNZ0g5aF2yf09MrS4Myhz7KKcZRJKJBBwYEFtNfU
+
+{
+  "toUserId": "69e727f00f713bc09dfa1c3e",
+  "amount": 100
+}
+
+### 
+GET http://localhost:3000/api/balances
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyNzgzMGY3MTNiYzA5ZGZhMWMzYyIsImlhdCI6MTc3Njg0MTA2OCwiZXhwIjoxNzc2OTI3NDY4fQ.CrL0q92gcRPPK-W6dqz6vr-epXL8blmb5EcBBoSANRk

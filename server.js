@@ -7,6 +7,7 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch(err => console.log("MongoDB connection error:", err));
 
+
 app.use(express.json());
 
 const authRoutes = require("./routes/authRoutes");
@@ -17,6 +18,9 @@ app.use("/api", expenseRoutes);
 
 const balanceRoutes = require("./routes/balanceRoutes");
 app.use("/api", balanceRoutes);
+
+const settlementRoutes = require("./routes/settlementRoutes");
+app.use("/api", settlementRoutes);
 
 const PORT = process.env.PORT || 3000;
 
