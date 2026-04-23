@@ -11,7 +11,9 @@ exports.getBalances = async (req, res) => {
         { paidBy: currentUser },
         { "splits.user": currentUser }
       ]
-    });
+    })
+    .populate("paidBy", "username")
+    .populate("splits.user", "username");
     
     const settlements = await Settlement.find({
       $or: [
@@ -25,26 +27,31 @@ exports.getBalances = async (req, res) => {
     console.log("CURRENT USER:", currentUser);
 
     const netBalances = {};
+    const userMap = {};
 
     for (let expense of expenses) {
-      const payer = expense.paidBy.toString();
+      const payerId = expense.paidBy._id.toString();
+      userMap[payerId] = expense.paidBy.username;
 
       for (let split of expense.splits) {
-        const user = split.user.toString();
+        const userId = split.user._id.toString();
+        const username = split.user.username;
         const amount = split.amountOwed;
 
-        if (user === payer) continue;
+        userMap[userId] = username;
+
+        if (userId === payerId) continue;
 
         // If YOU owe someone
-        if (user === currentUser) {
-          if (!netBalances[payer]) netBalances[payer] = 0;
-          netBalances[payer] -= amount;
+        if (userId === currentUser) {
+          if (!netBalances[payerId]) netBalances[payerId] = 0;
+          netBalances[payerId] -= amount;
         }
 
         // If someone owes YOU
-        if (payer === currentUser) {
-          if (!netBalances[user]) netBalances[user] = 0;
-          netBalances[user] += amount;
+        if (payerId === currentUser) {
+          if (!netBalances[userId]) netBalances[userId] = 0;
+          netBalances[userId] += amount;
         }
       }
     }
@@ -75,18 +82,22 @@ exports.getBalances = async (req, res) => {
       }
     }
 
+    console.log("NET BALANCES:", netBalances);
+
     // Clean output (remove zeros, format direction)
     const result = {};
 
-    for (let user in netBalances) {
-      const amount = netBalances[user];
+    for (let userId in netBalances) {
+      const amount = netBalances[userId];
 
       if (amount > 0) {
-        result[user] = {
+        result[userId] = {
+          name: userMap[userId] || "Unknown User",
           owesYou: amount
         };
       } else if (amount < 0) {
-        result[user] = {
+        result[userId] = {
+          name: userMap[userId] || "Unknown User",
           youOwe: Math.abs(amount)
         };
       }

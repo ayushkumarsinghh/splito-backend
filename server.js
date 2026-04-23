@@ -1,29 +1,59 @@
 require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+
 const app = express();
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch(err => console.log("MongoDB connection error:", err));
+// 🔥 Security Middlewares
+app.use(helmet());
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per 15 minutes
+  message: "Too many requests from this IP, please try again later."
+});
+app.use("/api", limiter);
+
+// 🔥 CORS configuration (Strict)
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL 
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
 
 app.use(express.json());
 
-const authRoutes = require("./routes/authRoutes");
-app.use("/api", authRoutes);
+// 🔥 Routes
+app.use("/api", require("./routes/authRoutes"));
+app.use("/api", require("./routes/expenseRoutes"));
+app.use("/api", require("./routes/balanceRoutes"));
+app.use("/api", require("./routes/settlementRoutes"));
+app.use("/api/users", require("./routes/userRoutes"));
 
-const expenseRoutes = require("./routes/expenseRoutes");
-app.use("/api", expenseRoutes);
+// 🔥 MongoDB connection
 
-const balanceRoutes = require("./routes/balanceRoutes");
-app.use("/api", balanceRoutes);
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.log("❌ MongoDB Error:", err));
 
-const settlementRoutes = require("./routes/settlementRoutes");
-app.use("/api", settlementRoutes);
-
+// 🔥 Start server
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(` Server running on port ${PORT}`);
 });

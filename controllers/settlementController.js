@@ -1,11 +1,12 @@
 const Settlement = require("../models/Settlement");
+const User = require("../models/User");
 
 exports.settle = async (req, res) => {
   try {
     const from = req.user.id;
-    const { toUserId, amount } = req.body;
+    const { toUsername, amount } = req.body;
 
-    if (!toUserId || !amount) {
+    if (!toUsername || !amount) {
       return res.status(400).json({ message: "Invalid data" });
     }
 
@@ -13,9 +14,14 @@ exports.settle = async (req, res) => {
       return res.status(400).json({ message: "Invalid amount" });
     }
 
+    const toUser = await User.findOne({ username: toUsername });
+    if (!toUser) {
+      return res.status(400).json({ message: `User not found: ${toUsername}` });
+    }
+
     const settlement = new Settlement({
       from,
-      to: toUserId,
+      to: toUser._id,
       amount
     });
 

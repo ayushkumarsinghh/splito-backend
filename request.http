@@ -1,3 +1,4 @@
+###
 POST http://localhost:3000/api/signup
 Content-Type: application/json
 
@@ -35,31 +36,26 @@ Content-Type: application/json
 ###
 POST http://localhost:3000/api/expense
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyN2YwMGY3MTNiYzA5ZGZhMWMzZSIsImlhdCI6MTc3NjgzODY0NSwiZXhwIjoxNzc2OTI1MDQ1fQ.XYnJqJXzeiJZHDWV316A0xQQ6DHwU8MlkKC_yeULB-4
+Authorization: YOUR_TOKEN
 
 {
   "amount": 900,
   "description": "Dinner",
-  "participants": [
-    "69e727f00f713bc09dfa1c3e",
-    "69e727830f713bc09dfa1c3c"
+  "splits": [
+    {
+      "user": "USER_ID_1",
+      "amountOwed": 300
+    },
+    {
+      "user": "USER_ID_2",
+      "amountOwed": 300
+    },
+    {
+      "user": "USER_ID_3",
+      "amountOwed": 300
+    }
   ]
 }
-
-### 
-GET http://localhost:3000/api/balances
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyN2YwMGY3MTNiYzA5ZGZhMWMzZSIsImlhdCI6MTc3NjgzNzk3MywiZXhwIjoxNzc2OTI0MzczfQ.LGzNQ_Dbqc-ORVJhmWDY_Ni-69loHkEBs4jnjPOmQ60
-
 ###
-POST http://localhost:3000/api/settle
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyNzgzMGY3MTNiYzA5ZGZhMWMzYyIsImlhdCI6MTc3NjgzODcxMywiZXhwIjoxNzc2OTI1MTEzfQ.ZH-qNZ0g5aF2yf09MrS4Myhz7KKcZRJKJBBwYEFtNfU
-
-{
-  "toUserId": "69e727f00f713bc09dfa1c3e",
-  "amount": 100
-}
-
-### 
 GET http://localhost:3000/api/balances
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZTcyNzgzMGY3MTNiYzA5ZGZhMWMzYyIsImlhdCI6MTc3Njg0MTA2OCwiZXhwIjoxNzc2OTI3NDY4fQ.CrL0q92gcRPPK-W6dqz6vr-epXL8blmb5EcBBoSANRk
+Authorization: Bearer YOUR_TOKEN
