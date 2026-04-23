@@ -12,10 +12,9 @@ The secure, high-performance API powering the Splito expense-tracking ecosystem.
   - Strict CORS: Locked down to official production domains.
 
 ## Tech Stack
-- Node.js and Express
-- MongoDB and Mongoose
-- JWT (JSON Web Tokens)
-- Bcrypt
+**Client:** React.js, Axios, Vanilla CSS
+**Server:** Node.js, Express.js, MongoDB (Mongoose), JWT, Bcrypt, Helmet.js, Express Rate Limit
+**Deployment:** Vercel (Frontend), Render (Backend), MongoDB Atlas (Database)
 
 ## Environment Variables
 Create a .env file in the root directory:
