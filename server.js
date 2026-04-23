@@ -18,11 +18,19 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
-// 🛠️ DEBUG CORS (Temporary)
+// 🔥 STRICT CORS configuration
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://splito-frontend.vercel.app" // Your exact production URL
+];
+
 app.use(cors({
   origin: function (origin, callback) {
-    console.log("Incoming Request from Origin:", origin);
-    callback(null, true); // Temporarily allow everything to find the issue
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
   },
   credentials: true
 }));
