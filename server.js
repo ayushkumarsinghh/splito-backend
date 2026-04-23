@@ -21,7 +21,7 @@ app.use("/api", limiter);
 // 🔥 STRICT CORS configuration
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://splito-frontend.vercel.app" // Your exact production URL
+  "https://splito-final.vercel.app"
 ];
 
 app.use(cors({
