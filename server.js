@@ -18,18 +18,11 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
-// 🔥 CORS configuration (Strict but flexible)
+// 🛠️ DEBUG CORS (Temporary)
 app.use(cors({
   origin: function (origin, callback) {
-    const allowed = !origin || 
-                   origin.startsWith("http://localhost") || 
-                   origin.endsWith(".vercel.app");
-    
-    if (allowed) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+    console.log("Incoming Request from Origin:", origin);
+    callback(null, true); // Temporarily allow everything to find the issue
   },
   credentials: true
 }));
