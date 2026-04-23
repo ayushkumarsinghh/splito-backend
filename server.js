@@ -18,15 +18,14 @@ const limiter = rateLimit({
 });
 app.use("/api", limiter);
 
-// 🔥 CORS configuration (Strict)
-const allowedOrigins = [
-  "http://localhost:5173",
-  process.env.FRONTEND_URL 
-];
-
+// 🔥 CORS configuration (Strict but flexible)
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    const allowed = !origin || 
+                   origin.startsWith("http://localhost") || 
+                   origin.endsWith(".vercel.app");
+    
+    if (allowed) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
