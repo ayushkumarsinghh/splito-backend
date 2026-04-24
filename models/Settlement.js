@@ -15,6 +15,11 @@ const settlementSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  status: {
+    type: String,
+    enum: ["pending", "completed", "declined"],
+    default: "completed" // default completed for legacy compatibility, but new requests will set it explicitly
+  },
   createdAt: {
     type: Date,
     default: Date.now

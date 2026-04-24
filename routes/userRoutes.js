@@ -9,5 +9,6 @@ router.use(auth);
 router.get("/profile", userController.getProfile);
 router.put("/profile", userController.updateProfile);
 router.get("/:userId/payment-info", userController.getUserPaymentInfo);
+router.get("/username/:username/payment-info", userController.getUserPaymentInfoByUsername);
 
 module.exports = router;

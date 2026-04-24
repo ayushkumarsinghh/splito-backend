@@ -19,7 +19,8 @@ exports.getBalances = async (req, res) => {
       $or: [
         { from: currentUser },
         { to: currentUser }
-      ]
+      ],
+      status: "completed"
     });
 
     console.log("EXPENSES:", expenses);
