@@ -30,31 +30,41 @@ exports.getUserGroups = async (req, res) => {
 exports.inviteToGroup = async (req, res) => {
   try {
     const { groupId } = req.params;
-    const { email } = req.body;
+    const { username } = req.body;
 
     const group = await Group.findById(groupId);
     if (!group) return res.status(404).json({ message: "Group not found" });
 
+    // Find user by username
+    const invitee = await User.findOne({ username });
+    if (!invitee) {
+      return res.status(404).json({ message: `User "${username}" not found` });
+    }
+
     // Check if user is already a member
-    const invitee = await User.findOne({ email });
-    if (invitee && group.members.includes(invitee._id)) {
+    if (group.members.includes(invitee._id)) {
       return res.status(400).json({ message: "User is already a member" });
     }
 
     // Check for existing pending invitation
-    const existingInvite = await Invitation.findOne({ groupId, inviteeEmail: email, status: "pending" });
+    const existingInvite = await Invitation.findOne({ 
+      groupId, 
+      inviteeEmail: invitee.email, 
+      status: "pending" 
+    });
+    
     if (existingInvite) {
-      return res.status(400).json({ message: "Invitation already sent" });
+      return res.status(400).json({ message: "Invitation already sent to this user" });
     }
 
     const invitation = new Invitation({
       groupId,
-      inviteeEmail: email,
+      inviteeEmail: invitee.email,
       invitedBy: req.user.id,
     });
 
     await invitation.save();
-    res.json({ message: "Invitation sent", invitation });
+    res.json({ message: `Invitation sent to ${username}`, invitation });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
