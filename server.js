@@ -42,6 +42,7 @@ app.use("/api", require("./routes/authRoutes"));
 app.use("/api", require("./routes/expenseRoutes"));
 app.use("/api", require("./routes/balanceRoutes"));
 app.use("/api", require("./routes/settlementRoutes"));
+app.use("/api", require("./routes/groupRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 
 // 🔥 MongoDB connection

@@ -3,10 +3,10 @@ const User = require("../models/User");
 
 exports.addExpense = async (req, res) => {
   try {
-    let { amount, description, participants, paidByUsername } = req.body;
+    let { amount, description, participants, paidByUsername, groupId } = req.body;
 
-    if (!amount || !participants || participants.length === 0) {
-      return res.status(400).json({ message: "Invalid data" });
+    if (!amount || (!participants && !groupId)) {
+      return res.status(400).json({ message: "Invalid data: amount and either participants or groupId are required" });
     }
 
     let payer;
@@ -20,19 +20,31 @@ exports.addExpense = async (req, res) => {
       payer = req.user.id.toString();
     }
 
-    // Find users by usernames
-    const users = await User.find({ username: { $in: participants } });
-    
-    // Check if any username was not found
-    const foundUsernames = users.map(u => u.username);
-    const missingUsernames = participants.filter(username => !foundUsernames.includes(username));
-    
-    if (missingUsernames.length > 0) {
-      return res.status(400).json({ message: `Users not found: ${missingUsernames.join(", ")}` });
-    }
+    let participantIds = [];
 
-    // Convert found users to IDs
-    let participantIds = users.map(u => u._id.toString());
+    if (groupId) {
+      const Group = require("../models/Group");
+      const group = await Group.findById(groupId);
+      if (!group) return res.status(404).json({ message: "Group not found" });
+      
+      // Use group members if no specific participants provided
+      if (!participants || participants.length === 0) {
+        participantIds = group.members.map(m => m.toString());
+      } else {
+        // Find users by usernames from the provided participants list
+        const users = await User.find({ username: { $in: participants } });
+        participantIds = users.map(u => u._id.toString());
+      }
+    } else {
+      // Find users by usernames
+      const users = await User.find({ username: { $in: participants } });
+      participantIds = users.map(u => u._id.toString());
+    }
+    
+    // Check if any participants were found (if not from group)
+    if (participantIds.length === 0) {
+      return res.status(400).json({ message: "No valid participants found" });
+    }
 
     // Remove duplicates
     participantIds = [...new Set(participantIds)];
@@ -53,13 +65,14 @@ exports.addExpense = async (req, res) => {
       paidBy: payer,
       amount,
       description,
-      splits
+      splits,
+      groupId: groupId || null
     });
 
     await expense.save();
 
     return res.json({
-      message: "Expense added with auto split",
+      message: "Expense added successfully",
       data: expense
     });
 
@@ -72,14 +85,20 @@ exports.addExpense = async (req, res) => {
 exports.getExpenses = async (req, res) => {
   try {
     const currentUser = req.user.id.toString();
-    const { search, user } = req.query;
+    const { search, user, groupId } = req.query;
 
-    let query = {
-      $or: [
-        { paidBy: currentUser },
-        { "splits.user": currentUser }
-      ]
-    };
+    let query = {};
+
+    if (groupId) {
+      query.groupId = groupId;
+    } else {
+      query = {
+        $or: [
+          { paidBy: currentUser },
+          { "splits.user": currentUser }
+        ]
+      };
+    }
 
     if (search) {
       query.description = { $regex: search, $options: "i" };
@@ -102,6 +121,7 @@ exports.getExpenses = async (req, res) => {
     const expenses = await Expense.find(query)
       .populate("paidBy", "username")
       .populate("splits.user", "username")
+      .populate("groupId", "name")
       .sort({ createdAt: -1 });
 
     return res.json(expenses);
@@ -123,6 +143,7 @@ exports.getRecentActivity = async (req, res) => {
       ]
     })
     .populate("paidBy", "username")
+    .populate("groupId", "name")
     .limit(10)
     .sort({ createdAt: -1 });
 
@@ -147,7 +168,8 @@ exports.getRecentActivity = async (req, res) => {
         amount: e.amount,
         paidBy: e.paidBy.username,
         isPayer: e.paidBy._id.toString() === currentUser,
-        createdAt: e.createdAt
+        createdAt: e.createdAt,
+        groupName: e.groupId?.name || null
       })),
       ...settlements.map(s => ({
         type: "settlement",
