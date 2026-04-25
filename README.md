@@ -1,101 +1,93 @@
-# Splito Backend
-A premium expense-sharing and group bill-splitting REST API built with Node.js, Express, and MongoDB.
+# 🌌 Splito API — Financial Coordination Engine
 
-## Tech Stack
-*   **Runtime**: Node.js
-*   **Framework**: Express.js
-*   **Database**: MongoDB (via Mongoose ODM)
-*   **Auth**: JWT (JSON Web Tokens) with middleware protection
-*   **Deployment**: Vercel / Render
+Splito is a high-performance REST API designed to simplify shared finances. It manages complex debt relationships, group expenses, and real-time invitations with a focus on security and developer experience.
 
-## Project Structure
-```text
-src/
-├── config/          # Database connection configuration
-├── controllers/     # Route handlers (Auth, Group, Expense, etc.)
-├── middleware/      # Auth protection and error handling
-├── models/          # Mongoose schemas (User, Group, Expense, Invitation)
-├── routes/          # API route definitions
-└── server.js        # Main application entry point
+---
+
+## ⚡ Core Features
+
+- **Dynamic Group Ecosystem**: Create, manage, and invite members via a robust invitation workflow.
+- **Real-time Balance Reconciliation**: Instant calculation of "who owes whom" across multiple groups.
+- **Secure Financial Profiles**: Integrated UPI ID management for seamless peer-to-peer settlements.
+- **Activity Tracking**: Comprehensive logging of every expense, payment, and group action.
+- **Bulletproof Auth**: JWT-protected endpoints with granular access control.
+
+---
+
+## 🛠️ Technology Architecture
+
+| Component | Technology |
+| :--- | :--- |
+| **Server** | Node.js with Express.js |
+| **Data Layer** | MongoDB Atlas with Mongoose ODM |
+| **Security** | JSON Web Tokens & Bcrypt hashing |
+| **Deployment** | Scalable Vercel/Render Infrastructure |
+
+---
+
+## 🚀 Development Setup
+
+### 1. Requirements
+Ensure you have **Node.js 18+** and a **MongoDB** instance (local or Atlas) ready.
+
+### 2. Installation
+```bash
+git clone https://github.com/ayushkumarsinghh/splito-backend.git
+cd splito-backend
+npm install
 ```
 
-## Getting Started
-
-### Prerequisites
-*   Node.js 18+
-*   MongoDB Atlas account or local MongoDB instance
-
-### Installation
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/ayushkumarsinghh/splito-backend.git
-    cd splito-backend
-    ```
-2.  **Install dependencies**:
-    ```bash
-    npm install
-    ```
-
-### Environment Variables
-Create a `.env` file in the root directory and add the following:
-```env
+### 3. Environment Configuration
+Define your credentials in a `.env` file:
+```bash
 PORT=3000
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret_key
-VITE_API_URL=http://localhost:3000
+MONGO_URI=your_mongo_connection_string
+JWT_SECRET=your_jwt_signing_key
 ```
 
-### Database Setup
-The application uses Mongoose. Ensure your `MONGO_URI` is correct, and the schemas will be automatically initialized on first run.
-
-### Run in Development
+### 4. Boot the Server
 ```bash
+# Development mode with hot-reloading
 npm run dev
-```
 
-### Build for Production
-```bash
+# Production build
 npm start
 ```
 
-## API Endpoints
+---
 
-### Auth
-| Method | Endpoint | Description | Auth |
-| :--- | :--- | :--- | :--- |
-| POST | `/api/auth/register` | Register a new user | No |
-| POST | `/api/auth/login` | Login and get token | No |
+## 🛣️ API Ecosystem
 
-### Users
-| Method | Endpoint | Description | Auth |
-| :--- | :--- | :--- | :--- |
-| GET | `/api/users/profile` | Get current user profile | Yes |
-| PUT | `/api/users/profile` | Update profile (UPI ID, password, etc.) | Yes |
+### 🔐 Authentication
+- `POST /api/auth/register` - Onboard a new user
+- `POST /api/auth/login` - Secure login & token generation
 
-### Groups
-| Method | Endpoint | Description | Auth |
-| :--- | :--- | :--- | :--- |
-| GET | `/api/groups` | List all groups user is member of | Yes |
-| POST | `/api/groups` | Create a new expense group | Yes |
-| POST | `/api/groups/:groupId/invite` | Invite user via username | Yes |
-| GET | `/api/invites` | Get pending group invitations | Yes |
-| POST | `/api/invites/:inviteId/respond` | Accept/Reject invitation | Yes |
-| DELETE | `/api/groups/:groupId/leave` | Leave a group | Yes |
+### 👤 User Management
+- `GET /api/users/profile` - Retrieve account and settlement details
+- `PUT /api/users/profile` - Update security credentials or UPI ID
 
-### Expenses & Balances
-| Method | Endpoint | Description | Auth |
-| :--- | :--- | :--- | :--- |
-| POST | `/api/expenses` | Add a new split expense | Yes |
-| GET | `/api/expenses/history` | Get full expense history | Yes |
-| GET | `/api/balances` | Get overall net balances | Yes |
-| GET | `/api/groups/:groupId/balances` | Get group-specific balances | Yes |
-| POST | `/api/settle` | Record a settlement payment | Yes |
+### 👥 Group Operations
+- `GET /api/groups` - Fetch all active memberships
+- `POST /api/groups` - Initialize a new shared expense group
+- `POST /api/groups/:groupId/invite` - Dispatch invitations to other users
+- `DELETE /api/groups/:groupId/leave` - Graceful exit from a group
 
-## Database Schema
-*   **User**: Profiles with username, email, password, and UPI ID for settlements.
-*   **Group**: Shared containers for expenses with member lists and creator tracking.
-*   **Expense**: Individual transaction records with split details and payer info.
-*   **Invitation**: Tracking pending/accepted group invites between users.
+### 💸 Transaction Ledger
+- `POST /api/expenses` - Log a new shared transaction
+- `GET /api/expenses/history` - Comprehensive history of all splits
+- `GET /api/balances` - Global summary of net financial standing
+- `POST /api/settle` - Execute and record a debt clearance
 
-## Deployment
-Configured for automated deployment via GitHub Actions to Vercel/Render. Every push to the main branch triggers a production build.
+---
+
+## 📊 Data Logic Summary
+The system utilizes four primary data entities to ensure consistency:
+1. **Users**: The base identity with financial metadata.
+2. **Groups**: Logical containers for shared spending.
+3. **Expenses**: Transactional entries with automated split logic.
+4. **Invitations**: State-managed onboarding for group collaboration.
+
+---
+
+## 🚢 Continuous Delivery
+Integrated with **GitHub Actions** for automated testing and deployment. Every merge to `main` triggers a production rollout to ensure zero-downtime updates.
