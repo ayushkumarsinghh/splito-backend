@@ -152,7 +152,8 @@ exports.getRecentActivity = async (req, res) => {
       $or: [
         { from: currentUser },
         { to: currentUser }
-      ]
+      ],
+      status: "completed"
     })
     .populate("from", "username")
     .populate("to", "username")
