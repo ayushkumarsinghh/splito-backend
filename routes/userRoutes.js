@@ -12,3 +12,4 @@ router.get("/:userId/payment-info", userController.getUserPaymentInfo);
 router.get("/username/:username/payment-info", userController.getUserPaymentInfoByUsername);
 
 module.exports = router;
+
