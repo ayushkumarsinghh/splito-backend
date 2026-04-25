@@ -153,3 +153,28 @@ exports.getGroupBalances = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.leaveGroup = async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const group = await Group.findById(groupId);
+    if (!group) return res.status(404).json({ message: "Group not found" });
+
+    if (!group.members.includes(req.user.id)) {
+      return res.status(400).json({ message: "You are not a member of this group" });
+    }
+
+    // Remove user from members list
+    group.members = group.members.filter(m => m.toString() !== req.user.id);
+    
+    if (group.members.length === 0) {
+      await Group.findByIdAndDelete(groupId);
+      return res.json({ message: "Group deleted as you were the last member" });
+    }
+
+    await group.save();
+    res.json({ message: "Left group successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
