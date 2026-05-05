@@ -42,7 +42,7 @@ app.use(cors({
 app.use(express.json());
 
 // 🔥 Routes
-app.use("/api", require("./routes/authRoutes"));
+app.use("/api/users", require("./routes/authRoutes"));
 app.use("/api", require("./routes/expenseRoutes"));
 app.use("/api", require("./routes/balanceRoutes"));
 app.use("/api", require("./routes/settlementRoutes"));
