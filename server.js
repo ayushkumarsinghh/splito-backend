@@ -9,7 +9,7 @@ const rateLimit = require("express-rate-limit");
 const app = express();
 
 // Trust the first proxy (Render, Heroku, etc.)
-app.set('trust proxy', 1);
+app.set('trust proxy', true);
 
 // 🔥 Security Middlewares
 app.use(helmet());
@@ -17,7 +17,8 @@ app.use(helmet());
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per 15 minutes
-  message: "Too many requests from this IP, please try again later."
+  message: "Too many requests from this IP, please try again later.",
+  validate: { xForwardedForHeader: false },
 });
 app.use("/api", limiter);
 
