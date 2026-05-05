@@ -8,6 +8,9 @@ const rateLimit = require("express-rate-limit");
 
 const app = express();
 
+// Trust the first proxy (Render, Heroku, etc.)
+app.set('trust proxy', 1);
+
 // 🔥 Security Middlewares
 app.use(helmet());
 
