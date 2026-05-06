@@ -178,3 +178,26 @@ exports.leaveGroup = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+exports.deleteGroup = async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const group = await Group.findById(groupId);
+    
+    if (!group) return res.status(404).json({ message: "Group not found" });
+
+    // Only creator can delete the group
+    if (group.createdBy.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Only the creator can delete this group" });
+    }
+
+    await Group.findByIdAndDelete(groupId);
+    
+    // Also cleanup pending invitations for this group
+    await Invitation.deleteMany({ groupId });
+
+    res.json({ message: "Group deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

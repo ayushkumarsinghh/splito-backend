@@ -10,5 +10,6 @@ router.get("/invites", auth, groupController.getPendingInvites);
 router.post("/invites/:inviteId/respond", auth, groupController.respondToInvite);
 router.get("/groups/:groupId/balances", auth, groupController.getGroupBalances);
 router.delete("/groups/:groupId/leave", auth, groupController.leaveGroup);
+router.delete("/groups/:groupId", auth, groupController.deleteGroup);
 
 module.exports = router;
